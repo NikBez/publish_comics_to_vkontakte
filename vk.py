@@ -55,6 +55,7 @@ def save_wall_photo(vk_access_token, uploaded_photo_params, group_id):
         "photo_id": response['response'][0]['id']
     }
 
+
 def post_on_the_wall(vk_access_token, photo_object, group_id, text=""):
 
     base_url = "https://api.vk.com/method/wall.post"
@@ -72,18 +73,15 @@ def post_on_the_wall(vk_access_token, photo_object, group_id, text=""):
     return response
 
 
-# def get_groups(vk_access_token, user_id):
-#     base_url = "https://api.vk.com/method/groups.get"
-#     header = {"Authorization": f"Bearer {vk_access_token}"}
-#     params = {
-#         "v": 5.131,
-#         "user_id": user_id,
-#         # "filter": "admin",
-#     }
-#     response = requests.get(base_url, headers=header, params=params)
-#     response.raise_for_status()
-#     response = response.json()
-#     return response
-
-
-
+def get_groups(vk_access_token, user_id):
+    base_url = "https://api.vk.com/method/groups.get"
+    header = {"Authorization": f"Bearer {vk_access_token}"}
+    params = {
+        "v": 5.131,
+        "user_id": user_id,
+        # "filter": "admin",
+    }
+    response = requests.get(base_url, headers=header, params=params)
+    response.raise_for_status()
+    response = response.json()
+    return response

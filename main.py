@@ -61,6 +61,5 @@ def get_random_number():
     return randint(1, int(response.json()['num']))
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
-
