@@ -1,3 +1,5 @@
+import sys
+
 import requests
 
 
@@ -12,8 +14,9 @@ def get_wall_upload_server(vk_access_token, group_id):
     response = requests.get(base_url, headers=header, params=params)
     response.raise_for_status()
     response = response.json()
+    check_response_errors(response)
 
-    return str(response["response"]["upload_url"])
+    return response["response"]["upload_url"]
 
 
 def post_photo_on_server(photo_path, upload_url):
@@ -25,6 +28,8 @@ def post_photo_on_server(photo_path, upload_url):
         response = requests.post(upload_url, files=files)
     response.raise_for_status()
     response = response.json()
+    check_response_errors(response)
+
     return response["server"], response["photo"], response["hash"]
 
 
@@ -43,6 +48,7 @@ def save_wall_photo(vk_access_token, group_id, server, photo, hash_code):
     response = requests.post(base_url, headers=header, data=params)
     response.raise_for_status()
     response = response.json()
+    check_response_errors(response)
     return response['response'][0]['owner_id'], response['response'][0]['id']
 
 
@@ -60,4 +66,18 @@ def post_on_the_wall(vk_access_token, group_id, owner_id, photo_id, text=""):
     response = requests.get(base_url, headers=header, params=params)
     response.raise_for_status()
     response = response.json()
+    check_response_errors(response)
     return response
+
+
+def check_response_errors(response):
+    if 'error' in response:
+        raise VkErrors(response['error']['error_code'], response['error']['error_msg'])
+
+
+class VkErrors(Exception):
+    def __init__(self, error_code, error_description):
+        self.error_code = error_code
+        self.error_description = error_description
+    def __str__(self):
+        return f"ERROR CODE: {self.error_code} - {self.error_description}"

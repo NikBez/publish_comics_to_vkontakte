@@ -5,7 +5,8 @@ import sys
 from environs import Env
 import requests
 
-from vk import get_wall_upload_server, post_photo_on_server, save_wall_photo, post_on_the_wall
+from vk import get_wall_upload_server, post_photo_on_server, save_wall_photo, post_on_the_wall, VkErrors
+
 
 TEMP_PICTURE_PATH = Path("temp_picture.png")
 
@@ -30,6 +31,9 @@ def main():
     except requests.exceptions.ConnectionError:
         print("Connection error. Make new attempt..")
         sys.exit()
+    except VkErrors as error_text:
+        print(error_text)
+        sys.exit()
     finally:
         Path.unlink(TEMP_PICTURE_PATH)
 
@@ -41,17 +45,17 @@ def download_random_comic():
     comic_number = get_random_number()
 
     image_metadata_url = f"https://xkcd.com/{comic_number}/info.0.json"
-    image_metadata = requests.get(image_metadata_url)
-    image_metadata.raise_for_status()
-    image_metadata = image_metadata.json()
+    metadata_response = requests.get(image_metadata_url)
+    metadata_response.raise_for_status()
+    metadata_response = metadata_response.json()
 
-    text = image_metadata['alt']
+    text = metadata_response['alt']
 
-    img_url = requests.get(image_metadata["img"])
-    img_url.raise_for_status()
+    img_response = requests.get(metadata_response["img"])
+    img_response.raise_for_status()
 
     with open("temp_picture.png", "wb") as picture:
-        picture.write(img_url.content)
+        picture.write(img_response.content)
     return text
 
 
