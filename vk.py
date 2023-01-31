@@ -1,5 +1,3 @@
-import sys
-
 import requests
 
 
@@ -72,12 +70,15 @@ def post_on_the_wall(vk_access_token, group_id, owner_id, photo_id, text=""):
 
 def check_response_errors(response):
     if 'error' in response:
-        raise VkErrors(response['error']['error_code'], response['error']['error_msg'])
+        raise VkErrors(response['error']['error_code'],
+                       response['error']['error_msg']
+                       )
 
 
 class VkErrors(Exception):
     def __init__(self, error_code, error_description):
         self.error_code = error_code
         self.error_description = error_description
+
     def __str__(self):
         return f"ERROR CODE: {self.error_code} - {self.error_description}"

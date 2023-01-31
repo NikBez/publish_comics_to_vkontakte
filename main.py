@@ -5,7 +5,11 @@ import sys
 from environs import Env
 import requests
 
-from vk import get_wall_upload_server, post_photo_on_server, save_wall_photo, post_on_the_wall, VkErrors
+from vk import get_wall_upload_server
+from vk import post_photo_on_server
+from vk import save_wall_photo
+from vk import post_on_the_wall
+from vk import VkErrors
 
 
 TEMP_PICTURE_PATH = Path("temp_picture.png")
@@ -25,8 +29,13 @@ def main():
         sys.exit()
     try:
         upload_address = get_wall_upload_server(vk_access_token, group_id)
-        server, photo, hash_code = post_photo_on_server(TEMP_PICTURE_PATH, upload_address)
-        owner_id, photo_id = save_wall_photo(vk_access_token, group_id, server, photo, hash_code)
+        server, photo, hash_code = post_photo_on_server(TEMP_PICTURE_PATH,
+                                                        upload_address
+                                                        )
+        owner_id, photo_id = save_wall_photo(vk_access_token,
+                                             group_id, server, photo,
+                                             hash_code
+                                             )
         post_on_the_wall(vk_access_token, group_id, owner_id, photo_id, text)
     except requests.exceptions.ConnectionError:
         print("Connection error. Make new attempt..")
